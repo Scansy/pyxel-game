@@ -15,19 +15,23 @@ class App():
     def __init__(self):
         pyxel.init(APP_WIDTH, APP_HEIGHT)
         self.player = Player(CENTER_X, CENTER_Y)
+        self.platform = Platform()
+
         pyxel.run(self.update, self.draw)
 
     def draw(self):
         self.player.draw()
+        self.platform.draw()
     
     def update(self):
         self.player.update()
+        self.platform.update()
 
 class Player():
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.dx = 0
+        self.dx = PLAYER_X_SPEED
         self.direction = 0
     
     def draw(self):
@@ -42,9 +46,23 @@ class Player():
             self.dx = -PLAYER_X_SPEED
         
         # adds to current x 
+        if (self.x + self.dx >= APP_WIDTH - PLAYER_RADIUS or self.x + self.dx <= PLAYER_RADIUS):
+            self.dx = 0
+
         self.x += self.dx
 
         # reset velocity
         self.dx = 0
+
+class Platform():
+    def __init__(self):
+        self.y = CENTER_Y + PLAYER_RADIUS + 1
+
+    def draw(self):
+        # pyxel.cls(1)
+        pyxel.rect(0, self.y, APP_WIDTH, APP_HEIGHT - self.y, 5)
+    
+    def update(self):
+        pass
 
 App()
